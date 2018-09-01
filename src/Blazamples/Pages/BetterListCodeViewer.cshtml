@@ -1,0 +1,81 @@
+﻿<CodeViewer>
+    <div class="tab-pane fade show active" id="nav-view" role="tabpanel" aria-labelledby="nav-view-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+<pre>
+&lt;p&gt;
+    New Item : &lt;input bind="@@ItemToAdd" /&gt;
+    &lt;button onclick="@@AddItem" disabled="@@CanAddItem"&gt;Add&lt;/button&gt;
+&lt;/p&gt;
+&lt;p&gt;
+    Your Items:
+&lt;/p&gt;
+&lt;select multiple&gt;
+    @@foreach (var item in AllItems)
+    {
+        &lt;option selected="@@IsOptionSelected(item)" 
+                   onclick="@@(mouseEvent =&gt; OnOptionClick(mouseEvent, item))" 
+                   value="@@item"&gt;@@item&lt;/option&gt;
+    }
+&lt;/select&gt;
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+<pre>
+public string ItemToAdd { get; set; }
+public bool CanAddItem { get =&gt; !string.IsNullOrEmpty(ItemToAdd); }
+public List&lt;string&gt; AllItems { get; set; } = new List&lt;string&gt;() { "Fries", "Eggs Benedict", "Ham", "Cheese" };
+public List&lt;string&gt; SelectedItems { get; set; } = new List&lt;string&gt; { "Ham" };
+
+public void AddItem()
+{
+    if (!string.IsNullOrEmpty(ItemToAdd) && AllItems.IndexOf(ItemToAdd) &lt; 0)
+    {
+        AllItems.Add(ItemToAdd);
+        ItemToAdd = string.Empty;
+    }
+}
+
+public bool IsOptionSelected(string item)
+{
+    return SelectedItems.Contains(item);
+}
+
+public void RemoveSelected()
+{
+    this.AllItems.RemoveAll(item =&gt; SelectedItems.Contains(item));
+}
+
+public void SortItems()
+{
+    AllItems.Sort();
+}
+
+public void OnOptionClick(UIMouseEventArgs mouseEvent, string item)
+{
+    if (mouseEvent.CtrlKey)
+    {
+        if (SelectedItems.Contains(item))
+        {
+            SelectedItems.Remove(item);
+        }
+        else
+        {
+            SelectedItems.Add(item);
+        }
+    }
+    else
+    {
+        SelectedItems.Clear();
+        SelectedItems.Add(item);
+    }
+}   
+</pre>
+            </div>
+        </div>
+    </div>
+</CodeViewer>

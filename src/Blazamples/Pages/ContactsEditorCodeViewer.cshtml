@@ -1,0 +1,141 @@
+﻿<CodeViewer>
+    <div class="tab-pane fade show active" id="nav-view" role="tabpanel" aria-labelledby="nav-view-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+&lt;h4&gt;Contacts&lt;/h4&gt;
+&lt;table class="table table-sm"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;First Name&lt;/th&gt;
+            &lt;th&gt;Last Name&lt;/th&gt;
+            &lt;th&gt;Phone Numbers&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        @@foreach (var contact in Contacts)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;
+                    &lt;input class="form-control" bind="@@contact.FirstName" /&gt;
+                    &lt;div&gt;
+                        &lt;a href="javascript:void(0)" onclick="@@(()=&gt;OnContactDelete(contact))"&gt;Delete&lt;/a&gt;
+                    &lt;/div&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                    &lt;input class="form-control" bind="@@contact.LastName" /&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                    &lt;table class="table table-sm"&gt;
+                        &lt;tbody&gt;
+                            @@foreach (var phone in contact.Phones)
+                            {
+                                &lt;tr&gt;
+                                    &lt;td&gt;
+                                        &lt;input class="form-control" bind="@@phone.Type" /&gt;
+                                    &lt;/td&gt;
+                                    &lt;td&gt;
+                                        &lt;input class="form-control" bind="@@phone.Number" /&gt;
+                                    &lt;/td&gt;
+                                    &lt;td&gt;
+                                        &lt;a href="javascript:void(0)" onclick="@@(()=&gt;OnPhoneDelete(contact,phone))"&gt;Delete&lt;/a&gt;
+                                    &lt;/td&gt;
+                                &lt;/tr&gt;
+                            }
+                        &lt;/tbody&gt;
+                    &lt;/table&gt;
+                    &lt;a href="javascript:void(0)" onclick="@@(()=&gt;OnPhoneAdd(contact))"&gt;Add Number&lt;/a&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;
+    &lt;button class="btn btn-sm btn-primary" onclick="@@OnContactAdd"&gt;Add Contact&lt;/button&gt;
+    &lt;button class="btn btn-sm btn-primary" onclick="@@OnSaveJson" disabled="@@IsSaveToJsonDisabled"&gt;Save to JSON&lt;/button&gt;
+&lt;/p&gt;
+&lt;textarea  value="@@JsonValue" rows='5' cols='120' disabled='disabled'&gt;&lt;/textarea&gt;
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+public class Phone
+{
+    public string Type { get; set; }
+    public string Number { get; set; }
+}
+
+public class Person
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public List&lt;Phone&gt; Phones { get; set; }
+
+}
+
+public List&lt;Person&gt; Contacts { get; set; } = new List&lt;Person&gt;
+    {
+        new Person
+        {
+            FirstName ="Danny",
+            LastName ="LaRusso",
+            Phones = new List&lt;Phone&gt;
+            {
+            new Phone{Type="Mobile",Number="(555) 121-2121"},
+            new Phone{Type="Mobile",Number="(555) 123-4567"}
+            }
+        },
+        new Person
+        {
+            FirstName ="Sensei",
+            LastName ="Miyagi",
+            Phones = new List&lt;Phone&gt;
+            {
+            new Phone{Type="Mobile",Number="(555) 444-2222"},
+            new Phone{Type="Mobile",Number="(555) 999-1212"}
+            }
+        }
+    };
+
+public string JsonValue { get; set; }
+
+public bool IsSaveToJsonDisabled
+{
+    get {
+        return ! (Contacts.Count &gt; 0);
+    }
+}
+
+public void OnContactAdd()
+{
+    Contacts.Add(new Person() { FirstName = "", LastName = "", Phones = new List&lt;Phone&gt;() });
+}
+
+public void OnContactDelete(Person person)
+{
+    Contacts.Remove(person);
+}
+
+public void OnPhoneDelete(Person person, Phone phone)
+{
+    person.Phones.Remove(phone);
+}
+
+public void OnPhoneAdd(Person person)
+{
+    person.Phones.Add(new Phone { Type="", Number="" });
+}
+
+public void OnSaveJson()
+{
+    JsonValue = Json.Serialize(Contacts);
+}
+</pre>
+            </div>
+        </div>
+    </div>
+</CodeViewer>

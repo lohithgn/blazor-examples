@@ -1,0 +1,66 @@
+﻿<CodeViewer>
+    <div class="tab-pane fade show active" id="nav-view" role="tabpanel" aria-labelledby="nav-view-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+&lt;ul&gt;
+    @@foreach (var person in People)
+    {
+        &lt;li&gt;
+            &lt;div&gt;
+                &lt;span&gt;@@person.Name&lt;/span&gt; has &lt;span&gt;@@person.Children.Count&lt;/span&gt; children:
+                &lt;a href="javascript:void(0)" onclick="@@(()=&gt;AddChild(person))"&gt;Add Child&lt;/a&gt;
+            &lt;/div&gt;
+            &lt;ul&gt;
+                @@foreach (var child in person.Children)
+                {
+                    &lt;li&gt;
+                        &lt;span&gt;@@child&lt;/span&gt;
+                    &lt;/li&gt;
+                }
+            &lt;/ul&gt;
+        &lt;/li&gt;
+    }
+&lt;/ul&gt;
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+public class Person
+{
+    public string Name { get; }
+
+    public List&lt;string&gt; Children { get; private set; }
+
+    public Person(string name, List&lt;string&gt; children)
+    {
+        Name = name;
+        Children = children;
+    }
+
+    public void AddChild()
+    {
+        this.Children.Add("New Child");
+    }
+}
+
+public List&lt;Person&gt; People { get; set; } = new List&lt;Person&gt;
+{
+    new Person("Annabelle",new List&lt;string&gt; { "Arnie", "Anders", "Apple"}),
+    new Person("Bertie",new List&lt;string&gt; {"Boutros-Boutros", "Brianna", "Barbie", "Bee-bop"}),
+    new Person("Charles",new List&lt;string&gt; { "Cayenne", "Cleopatra"})
+};
+
+public void AddChild(Person person)
+{
+    person.AddChild();
+}
+</pre>
+            </div>
+        </div>
+    </div>
+</CodeViewer>

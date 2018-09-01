@@ -1,0 +1,78 @@
+﻿@page "/betterlist"
+
+<h3>Live Example</h3>
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <p>
+                    New Item : <input class="form-control" bind="@ItemToAdd" />
+                    <button class="btn btn-sm btn-primary" onclick="@AddItem" disabled="@CanAddItem">Add</button>
+                </p>
+                <p>
+                    Your Items:
+                </p>
+                <select multiple class="form-control">
+                    @foreach (var item in AllItems)
+                    {
+                        <option selected="@IsOptionSelected(item)" onclick="@(mouseEvent => OnOptionClick(mouseEvent, item))" value="@item">@item</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<h3>Source Code</h3>
+<BetterListCodeViewer></BetterListCodeViewer>
+
+@functions {
+
+public string ItemToAdd { get; set; }
+public bool CanAddItem { get => string.IsNullOrEmpty(ItemToAdd); }
+public List<string> AllItems { get; set; } = new List<string>() { "Fries", "Eggs Benedict", "Ham", "Cheese" };
+public List<string> SelectedItems { get; set; } = new List<string> { "Ham" };
+
+public void AddItem()
+{
+    if (!string.IsNullOrEmpty(ItemToAdd) && AllItems.IndexOf(ItemToAdd) < 0)
+    {
+        AllItems.Add(ItemToAdd);
+        ItemToAdd = string.Empty;
+    }
+}
+
+public bool IsOptionSelected(string item)
+{
+    return SelectedItems.Contains(item);
+}
+
+public void RemoveSelected()
+{
+    this.AllItems.RemoveAll(item => SelectedItems.Contains(item));
+}
+
+public void SortItems()
+{
+    AllItems.Sort();
+}
+
+public void OnOptionClick(UIMouseEventArgs mouseEvent, string item)
+{
+    if (mouseEvent.CtrlKey)
+    {
+        if (SelectedItems.Contains(item))
+        {
+            SelectedItems.Remove(item);
+        }
+        else
+        {
+            SelectedItems.Add(item);
+        }
+    }
+    else
+    {
+        SelectedItems.Clear();
+        SelectedItems.Add(item);
+    }
+}
+}

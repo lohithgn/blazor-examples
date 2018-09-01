@@ -1,0 +1,120 @@
+﻿<CodeViewer>
+    <div class="tab-pane fade show active" id="nav-view" role="tabpanel" aria-labelledby="nav-view-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th>Name&lt;/th&gt;
+            &lt;th>Sales&lt;/th&gt;
+            &lt;th>Price&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+    @@foreach (var product in ItemsOnCurrentPage)
+    {
+        &lt;tr&gt;
+            &lt;td&gt;@@product.Name&lt;/td&gt;
+            &lt;td&gt;@@product.Sales&lt;/td&gt;
+            &lt;td&gt;$@@product.Price&lt;/td&gt;
+        &lt;/tr&gt;
+    }
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div&gt;
+    &lt;span&gt;Page: &lt;/span&gt;
+    &lt;nav aria-label="Page navigation example"&gt;
+        &lt;ul class="pagination"&gt;
+        @@for (var pageCounter = 0; pageCounter &lt; MaxPageIndex; pageCounter++)
+        {
+            var currentPage = pageCounter;
+            &lt;li class="page-item" onclick="@@(()=&gt;OnPageClick(currentPage))">
+                &lt;a class="page-link" href="javascript:void(0)">@@(currentPage + 1)&lt;/a&gt;
+            &lt;/li&gt;
+        }
+        &lt;/ul&gt;
+    &lt;/nav&gt;
+&lt;/div&gt;
+&lt;div&gt;
+    &lt;button class="btn btn-sm btn-primary" onclick="@@OnAddItem"&gt;Add item&lt;/button&gt;
+    &lt;button class="btn btn-sm btn-primary" onclick="@@OnSortByName"&gt;Sort by name&lt;/button&gt;
+    &lt;button class="btn btn-sm btn-primary" onclick="@@OnJumpToFirstPage" disabled="@@(CurrentPageIndex == 0)">
+        Jump to first page
+    &lt;/button&gt;
+&lt;/div&gt;
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+public class Product
+{
+    public string Name { get; set; }
+    public int Sales { get; set; }
+    public double Price { get; set; }
+
+}
+
+public List&lt;Product&gt; Items { get; set; } = new List&lt;Product&gt;()
+{
+new Product{ Name="Well-Travelled Kitten", Sales= 352, Price=75.95 },
+new Product{ Name="Speedy Coyote", Sales= 89, Price=190.00 },
+new Product{ Name="Furious Lizard", Sales= 152, Price=25.00 },
+new Product{ Name="Indifferent Monkey", Sales= 1, Price=99.95 },
+new Product{ Name="Brooding Dragon", Sales= 0, Price=6350 },
+new Product{ Name="Ingenious Tadpole", Sales= 39450, Price=0.35 },
+new Product{ Name="Optimistic Snail", Sales= 420, Price=1.50 }
+};
+
+public int PageSize { get; } = 5;
+
+public int CurrentPageIndex { get; set; } = 0;
+
+public List&lt;Product&gt; ItemsOnCurrentPage
+{
+    get
+    {
+        var skipIndex = PageSize * CurrentPageIndex;
+        return Items.Skip(skipIndex).Take(PageSize).ToList();
+    }
+}
+
+public int MaxPageIndex
+{
+    get
+    {
+        return (int)Math.Ceiling((double)Items.Count / PageSize);
+    }
+}
+
+public void OnJumpToFirstPage()
+{
+    CurrentPageIndex = 0;
+}
+
+public void OnAddItem()
+{
+    Items.Add(new Product() { Name = "New Item", Sales = 0, Price = 100 });
+}
+
+public void OnSortByName()
+{
+    Items.Sort(delegate (Product x, Product y)
+    {
+        return x.Name.CompareTo(y.Name);
+    });
+}
+
+public void OnPageClick(int pageIndex)
+{
+    CurrentPageIndex = pageIndex;
+}
+</pre>
+            </div>
+        </div>
+    </div>
+</CodeViewer>

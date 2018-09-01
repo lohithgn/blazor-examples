@@ -1,0 +1,36 @@
+﻿@page "/clickcounter"
+<h3>Live Example</h3>
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <div>You've clicked <span>@NumberOfClicks</span> times</div>
+                <button onclick="@RegisterClick" class='btn btn-primary btn-sm' disabled="@HasClickedTooManyTimes">Click me</button>
+                <div class='@((HasClickedTooManyTimes ? "d-block" : "d-none"))'>
+                    That's too many clicks! Please stop before you wear out your fingers.
+                    <button class='btn btn-primary btn-sm' onclick="@ResetClicks">Reset clicks</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Source Code</h3>
+<ClickCounterCodeViewer></ClickCounterCodeViewer>
+
+@functions {
+
+public int NumberOfClicks { get; set; }
+
+public bool HasClickedTooManyTimes { get => NumberOfClicks >= 3; }
+
+public void RegisterClick()
+{
+    ++NumberOfClicks;
+}
+
+public void ResetClicks()
+{
+    NumberOfClicks = 0;
+}
+}

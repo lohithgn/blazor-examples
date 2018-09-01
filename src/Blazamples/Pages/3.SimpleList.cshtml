@@ -1,0 +1,40 @@
+﻿@page "/simplelist"
+
+<h3>Live Example</h3>
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <p>
+                    New Item : <input class="form-control" bind="@ItemToAdd" />
+                    <button class="btn btn-sm btn-primary" onclick="@AddItem">Add</button>
+                </p>
+                <p>
+                    Your Items:
+                </p>
+                <select multiple class="form-control">
+                    @foreach (var item in Items)
+                    {
+                        <option vaue="@item">@item</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<h3>Source Code</h3>
+<SimpleListCodeViewer></SimpleListCodeViewer>
+
+@functions {
+
+public List<string> Items { get; set; } = new List<string>() { "Alpha", "Beta", "Gamma" };
+public string ItemToAdd { get; set; }
+public void AddItem()
+{
+    if (!string.IsNullOrEmpty(ItemToAdd))
+    {
+        Items.Add(ItemToAdd);
+        ItemToAdd = string.Empty;
+    }
+}
+}

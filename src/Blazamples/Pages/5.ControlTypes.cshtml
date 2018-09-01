@@ -1,0 +1,140 @@
+﻿@page "/controltypes"
+<h3>Live example</h3>
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h3>HTML controls</h3>
+                        <table class="table table-bordered">
+                            <tr>
+                                <td class="label">Text value (updates on change):</td>
+                                <td><input class="form-control" bind="@StringValue" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Text value (multi-line):</td>
+                                <td><textarea class="form-control" bind="@StringValue"> </textarea></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Password:</td>
+                                <td><input class="form-control" type="password" bind="@PasswordValue" /></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Checkbox:</td>
+                                <td>
+                                <input type="checkbox" bind="@BooleanValue" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">Drop-down list:</td>
+                                <td>
+                                    <select bind="@SelectedOptionValue" class="form-control">
+                                        @foreach (var item in OptionValues)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">Multi-select drop-down list:</td>
+                                <td>
+                                    <select multiple="multiple" class="form-control">
+                                        @foreach (var item in OptionValues)
+                                        {
+                                            <option selected="@IsOptionSelected(item)" onclick="@(mouseEvent => OnOptionClick(mouseEvent, item))" value="@item">@item</option>
+                                        }
+                                    </select></td>
+                            </tr>
+                            <tr>
+                                <td class="label">Radio buttons:</td>
+                                <td>
+                                    <label><input type="radio" name="radioOptions" bind="@RadioSelectedOptionValue" onclick="@(()=>SetRadioSelectionOption("Alpha"))" checked="@(RadioSelectedOptionValue == "Alpha")"/>Alpha</label>
+                                    <label><input type="radio" name="radioOptions" bind="@RadioSelectedOptionValue" onclick="@(()=>SetRadioSelectionOption("Beta"))" checked="@(RadioSelectedOptionValue == "Beta")"/>Beta</label>
+                                    <label><input type="radio" name="radioOptions" bind="@RadioSelectedOptionValue" onclick="@(()=>SetRadioSelectionOption("Gamma"))" checked="@(RadioSelectedOptionValue == "Gamma")"/>Gamma</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="readout">
+                            <h3>What's in the model?</h3>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td class="label">Text value:</td>
+                                    <td>@StringValue</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Password:</td>
+                                    <td>@PasswordValue</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Bool value:</td>
+                                    <td>@(BooleanValue ? "True" : "False")</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Selected option:</td>
+                                    <td>@SelectedOptionValue</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Multi-selected options:</td>
+                                    <td>@string.Join(",", MultipleOptionSelectedValue)</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">Radio button selection:</td>
+                                    <td>@RadioSelectedOptionValue</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Source Code</h3>
+<ControlTypesCodeViewer></ControlTypesCodeViewer>
+
+@functions {
+    public string StringValue { get; set; } = "Hello";
+    public string PasswordValue { get; set; } = "mypass";
+    public bool BooleanValue { get; set; } = true;
+    public string[] OptionValues { get; set; } = new string[] { "Alpha", "Beta", "Gamma" };
+    public string SelectedOptionValue { get; set; } = "Gamma";
+    public string RadioSelectedOptionValue { get; set; } = "Beta";
+    public List<string> MultipleOptionSelectedValue { get; set; } = new List<string> { "Alpha" };
+
+    public void SetRadioSelectionOption(string value)
+    {
+        RadioSelectedOptionValue = value;
+    }
+
+    public bool IsOptionSelected(string item)
+    {
+        return MultipleOptionSelectedValue.Contains(item);
+    }
+
+    public void OnOptionClick(UIMouseEventArgs mouseEvent, string item)
+    {
+        if (mouseEvent.CtrlKey)
+        {
+            if (MultipleOptionSelectedValue.Contains(item))
+            {
+                MultipleOptionSelectedValue.Remove(item);
+            }
+            else
+            {
+                MultipleOptionSelectedValue.Add(item);
+            }
+        }
+        else
+        {
+            MultipleOptionSelectedValue.Clear();
+            MultipleOptionSelectedValue.Add(item);
+        }
+    }
+}

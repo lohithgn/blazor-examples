@@ -1,0 +1,70 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Blazor Examples</a>
+    <button class="navbar-toggler" onclick=@ToggleNavMenu>
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class=@(collapseNavMenu ? "collapse" : null) onclick=@ToggleNavMenu>
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match=NavLinkMatch.All>
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="helloworld">
+                <span class="oi oi-plus" aria-hidden="true"></span> Hello World
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="clickcounter">
+                <span class="oi oi-plus" aria-hidden="true"></span> Click counter
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="simplelist">
+                <span class="oi oi-plus" aria-hidden="true"></span> Simple list
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="betterlist">
+                <span class="oi oi-plus" aria-hidden="true"></span> Better list
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="controltypes">
+                <span class="oi oi-plus" aria-hidden="true"></span> Control types
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="collections">
+                <span class="oi oi-plus" aria-hidden="true"></span> Collections
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="pagedgrid">
+                <span class="oi oi-plus" aria-hidden="true"></span> Paged Grid
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="contactseditor">
+                <span class="oi oi-plus" aria-hidden="true"></span> Contacts Editor
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="cart">
+                <span class="oi oi-plus" aria-hidden="true"></span> Shopping Cart
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+@functions {
+    bool collapseNavMenu = true;
+
+    void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

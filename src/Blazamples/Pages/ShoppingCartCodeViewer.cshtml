@@ -1,0 +1,236 @@
+﻿<CodeViewer>
+    <div class="tab-pane fade show active" id="nav-view" role="tabpanel" aria-labelledby="nav-view-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+&lt;table class="table table-sm"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th width='25%'&gt;Category&lt;/th&gt;
+            &lt;th width='25%'&gt;Product&lt;/th&gt;
+            &lt;th width='15%'&gt;Price&lt;/th&gt;
+            &lt;th width='10%'&gt;Quantity&lt;/th&gt;
+            &lt;th class='price' width='15%'&gt;Subtotal&lt;/th&gt;
+            &lt;th width='10%'&gt; &lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        @@foreach (var line in ShoppingCart.Lines)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;
+                    &lt;select onchange="@@(eventArgs =&gt; OnCategorySelected(eventArgs,line))" 
+                               style="width:75%"&gt;
+                        &lt;option value="" selected="selected"&gt;Select...&lt;/option&gt;
+                        @@foreach (var category in SampleCategories)
+                        {
+                            &lt;option value="@@category.Id"&gt;@@category.Name&lt;/option&gt;
+                        }
+                    &lt;/select&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                    @@if (line.CategoryId != null)
+                    {
+                        &lt;select onchange="@@(eventArgs =&gt; OnProductSelected(eventArgs, line))" 
+                                   style="width:75%"&gt;
+                            &lt;option value="" selected="@@(line.Product == null ? true : false)"&gt;Select...&lt;/option&gt;
+                            @@foreach (var product in SampleProducts.FindAll(item =&gt; item.CategoryId == line.CategoryId))
+                            {
+                                &lt;option value="@@product.Id"&gt;@@product.Name&lt;/option&gt;
+                            }
+                        &lt;/select&gt;
+                    }
+                &lt;/td&gt;
+                &lt;td&gt;
+                    @@if (line.Product != null)
+                    {
+                        &lt;span&gt;$@@line.Product.Price&lt;/span&gt;
+                    }
+                &lt;/td&gt;
+                &lt;td&gt;
+                    @@if (line.Product != null)
+                    {
+                        &lt;input bind="@@line.Quantity" /&gt;
+                    }
+                &lt;/td&gt;
+                &lt;td&gt;
+                    @@if (line.Product != null)
+                    {
+                        &lt;span&gt;$@@line.Subtotal&lt;/span&gt;
+                    }
+                &lt;/td&gt;
+                &lt;td&gt;
+                    &lt;button class="btn btn-sm btn-light" onclick="@@(()=&gt;OnCartLineRemove(line))"&gt;
+                        &lt;span class="oi oi-circle-x"&gt;&lt;/span&gt;
+                    &lt;/button&gt;
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;
+    Grand Total: $@@ShoppingCart.Gradtotal
+&lt;/p&gt;
+&lt;button class="btn btn-sm btn-primary" onclick="@@OnProductAdd"&gt;Add Product&lt;/button&gt;
+&lt;button class="btn btn-sm btn-primary" onclick="@@OnOrderSubmit"&gt;Submit Order&lt;/button&gt;
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+public class Category
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+}
+
+public class Product
+{
+    public int Id { get; set; }
+    public int CategoryId { get; set; }
+    public string Name { get; set; }
+    public double Price { get; set; }
+
+}
+
+public class CartLine
+{
+    public int? CategoryId { get; set; }
+    public Product Product { get; set; }
+    public int Quantity { get; set; } = 1;
+    public double Subtotal
+    {
+        get
+        {
+            return Product == null ? 0 : Product.Price * Quantity;
+        }
+    }
+}
+
+public class Cart
+{
+    public List&lt;CartLine&gt; Lines { get; set; } = new List&lt;CartLine&gt; { new CartLine() };
+
+    public double Gradtotal
+    {
+        get
+        {
+            return Lines.Sum(line =&gt; line.Subtotal);
+        }
+    }
+
+    public void AddLine(CartLine line)
+    {
+        Lines.Add(line);
+    }
+
+    public void RemoveLine(CartLine line)
+    {
+        Lines.Remove(line);
+    }
+}
+
+protected override void OnInit()
+{
+    Console.WriteLine($" Product : {ShoppingCart.Lines[0].Product == null}");
+}
+
+public Cart ShoppingCart { get; set; } = new Cart();
+
+public string OrderJson { get; set; } = string.Empty;
+
+public List&lt;Category&gt; SampleCategories = new List&lt;Category&gt;
+{
+    new Category { Id=1, Name="Classic Cars"},
+    new Category { Id=2, Name="Motorcyles"},
+    new Category { Id=3, Name="Planes"},
+    new Category { Id=4, Name="Ships"},
+    new Category { Id=5, Name="Trains"},
+    new Category { Id=6, Name="Trucks & Buses"},
+    new Category { Id=7, Name="Vintage Cars"}
+};
+
+public List&lt;Product&gt; SampleProducts = new List&lt;Product&gt;
+{
+    new Product { Id=1, CategoryId=1, Name="1948 Porsche 356-A Roadster",Price=53.9 },
+    new Product { Id=2, CategoryId=1, Name="1948 Porsche Type 356 Roadster",Price=62.16 },
+    new Product { Id=3, CategoryId=1, Name="1948 Jaguar XK 120",Price=47.25 },
+
+    new Product { Id=4, CategoryId=2, Name="1936 Harley Davidson El Knucklehead",Price=24.23 },
+    new Product { Id=5, CategoryId=2, Name="1957 Vespa GS150",Price=32.95 },
+    new Product { Id=6, CategoryId=2, Name="1960 BSA Gold Star DBD34",Price=37.32 },
+
+    new Product { Id=7, CategoryId=3, Name="1900s Vintage Bi-Plane",Price=34.25 },
+    new Product { Id=8, CategoryId=3, Name="1900s Vintage Tri-Plane",Price=36.23},
+    new Product { Id=9, CategoryId=3, Name="1928 British Royal Navy Airplane",Price=66.74 },
+
+    new Product { Id=10, CategoryId=4, Name="18th century schooner",Price=82.34 },
+    new Product { Id=11, CategoryId=4, Name="1999 Yamaha Speed Boat",Price=51.61},
+    new Product { Id=12, CategoryId=4, Name="HMS Bounty",Price=39.83 },
+
+    new Product { Id=13, CategoryId=5, Name="1950's Chicago Surface Lines Streetcar",Price=26.72},
+    new Product { Id=14, CategoryId=5, Name="1962 City of Detroit Streetcar",Price=37.49},
+    new Product { Id=15, CategoryId=5, Name="Collectable Wooden Train",Price=67.56},
+
+    new Product { Id=16, CategoryId=6, Name="1926 Ford Fire Engine",Price=24.92},
+    new Product { Id=17, CategoryId=6, Name="1940 Ford Pickup Truck",Price=58.33},
+    new Product { Id=18, CategoryId=6, Name="1940s Ford truck",Price=84.76},
+
+    new Product { Id=19, CategoryId=7, Name="18th Century Vintage Horse Carriage",Price=60.74},
+    new Product { Id=20, CategoryId=7, Name="1903 Ford Model A",Price=68.3},
+    new Product { Id=21, CategoryId=7, Name="1904 Buick Runabout",Price=52.66},
+
+};
+
+public bool IsCategoryOptionSelected(Category category, CartLine line)
+{
+    Console.WriteLine($"line.categoryid:{line.CategoryId}");
+    Console.WriteLine($"category.categoryid:{category.Id}");
+    return line.CategoryId != null && line.CategoryId == category.Id;
+}
+
+public bool IsProductOptionSelected(Product product, CartLine line)
+{
+    return line.Product != null && line.Product.Id == product.Id;
+}
+
+public void OnProductAdd()
+{
+    ShoppingCart.AddLine(new CartLine());
+}
+
+public void OnCategorySelected(UIChangeEventArgs args, CartLine line)
+{
+    var newValue = args.Value.ToString();
+    if (!string.IsNullOrEmpty(newValue))
+    {
+        line.CategoryId = int.Parse(newValue);
+        line.Product = null;
+    }
+}
+
+public void OnProductSelected(UIChangeEventArgs args, CartLine line)
+{
+    int productId = int.Parse(args.Value.ToString());
+    line.Product = SampleProducts.SingleOrDefault(product =&gt; product.Id == productId);
+}
+
+public void OnCartLineRemove(CartLine line)
+{
+    ShoppingCart.RemoveLine(line);
+}
+
+public void OnOrderSubmit()
+{
+    var orderData = ShoppingCart.Lines.Select(line =&gt; new { ProductName = line.Product.Name, Quantity = line.Quantity });
+    var orderDataJson = Json.Serialize(orderData);
+    JSRuntime.Current.InvokeAsync&lt;string&gt;("alert", $"Could now send this to server: {orderDataJson}");
+}
+</pre>
+            </div>
+        </div>
+    </div>
+</CodeViewer>

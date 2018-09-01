@@ -1,0 +1,66 @@
+﻿@page "/collections"
+<h3>Live example</h3>
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <h2>People</h2>
+                <ul>
+                    @foreach (var person in People)
+                    {
+                        <li>
+                            <div>
+                                <span>@person.Name</span> has <span>@person.Children.Count</span> children:
+                                <a href="javascript:void(0)" onclick="@(()=>AddChild(person))">Add Child</a>
+                            </div>
+                            <ul>
+                                @foreach (var child in person.Children)
+                                {
+                                    <li>
+                                        <span>@child</span>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<h3>Source Code</h3>
+<CollectionsCodeViewer></CollectionsCodeViewer>
+
+
+@functions  {
+
+public class Person
+{
+    public string Name { get; }
+
+    public List<string> Children { get; private set; }
+
+    public Person(string name, List<string> children)
+    {
+        Name = name;
+        Children = children;
+    }
+
+    public void AddChild()
+    {
+        this.Children.Add("New Child");
+    }
+}
+
+public List<Person> People { get; set; } = new List<Person>
+{
+new Person("Annabelle",new List<string> { "Arnie", "Anders", "Apple"}),
+new Person("Bertie",new List<string> {"Boutros-Boutros", "Brianna", "Barbie", "Bee-bop"}),
+new Person("Charles",new List<string> { "Cayenne", "Cleopatra"})
+};
+
+public void AddChild(Person person)
+{
+    person.AddChild();
+}
+}

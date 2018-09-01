@@ -1,0 +1,142 @@
+﻿<CodeViewer>
+    <div class="tab-pane fade show active" id="nav-view" role="tabpanel" aria-labelledby="nav-view-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+&lt;h3&gt;HTML controls&lt;/h3&gt;
+&lt;table class="table table-bordered"&gt;
+    &lt;tr&gt;
+        &lt;td class="label"&gt;Text value (updates on change):&lt;/td&gt;
+        &lt;td&gt;&lt;input class="form-control" bind="@@StringValue" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="label"&gt;Text value (multi-line):&lt;/td&gt;
+        &lt;td&gt;&lt;textarea class="form-control" bind="@@StringValue"&gt; &lt;/textarea&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="label"&gt;Password:&lt;/td&gt;
+        &lt;td&gt;&lt;input class="form-control" type="password" bind="@@PasswordValue" /&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="label"&gt;Checkbox:&lt;/td&gt;
+        &lt;td&gt;
+        &lt;input type="checkbox" bind="@@BooleanValue" /&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="label"&gt;Drop-down list:&lt;/td&gt;
+        &lt;td&gt;
+            &lt;select bind="@@SelectedOptionValue" class="form-control"&gt;
+                @@foreach (var item in OptionValues)
+                {
+                    &lt;option value="@@item"&gt;@@item&lt;/option&gt;
+                }
+            &lt;/select&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="label"&gt;Multi-select drop-down list:&lt;/td&gt;
+        &lt;td&gt;
+            &lt;select multiple="multiple" class="form-control"&gt;
+                @@foreach (var item in OptionValues)
+                {
+                    &lt;option selected="@@IsOptionSelected(item)" 
+                               onclick="@@(mouseEvent =&gt; OnOptionClick(mouseEvent, item))" 
+                               value="@@item"&gt;@@item&lt;/option&gt;
+                }
+            &lt;/select&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td class="label"&gt;Radio buttons:&lt;/td&gt;
+        &lt;td&gt;
+            &lt;label&gt;&lt;input type="radio" name="radioOptions" bind="@@RadioSelectedOptionValue" 
+                                   onclick="@@(()=&gt;SetRadioSelectionOption("Alpha"))" 
+                                   checked="@@(RadioSelectedOptionValue == "Alpha")"/&gt;Alpha&lt;/label&gt;
+            &lt;label&gt;&lt;input type="radio" name="radioOptions" bind="@@RadioSelectedOptionValue" 
+                                   onclick="@@(()=&gt;SetRadioSelectionOption("Beta"))" 
+                                   checked="@@(RadioSelectedOptionValue == "Beta")"/&gt;Beta&lt;/label&gt;
+            &lt;label&gt;&lt;input type="radio" name="radioOptions" bind="@@RadioSelectedOptionValue" 
+                                   onclick="@@(()=&gt;SetRadioSelectionOption("Gamma"))" 
+                                   checked="@@(RadioSelectedOptionValue == "Gamma")"/&gt;Gamma&lt;/label&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+&lt;div class="readout"&gt;
+    &lt;h3&gt;What's in the model?&lt;/h3&gt;
+    &lt;table class="table table-bordered"&gt;
+        &lt;tr&gt;
+            &lt;td class="label"&gt;Text value:&lt;/td&gt;
+            &lt;td&gt;@@StringValue&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td class="label"&gt;Password:&lt;/td&gt;
+            &lt;td&gt;@@PasswordValue&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td class="label"&gt;Bool value:&lt;/td&gt;
+            &lt;td&gt;@@(BooleanValue ? "True" : "False")&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td class="label"&gt;Selected option:&lt;/td&gt;
+            &lt;td&gt;@@SelectedOptionValue&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td class="label"&gt;Multi-selected options:&lt;/td&gt;
+            &lt;td&gt;@@string.Join(",", MultipleOptionSelectedValue)&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td class="label"&gt;Radio button selection:&lt;/td&gt;
+            &lt;td&gt;@@RadioSelectedOptionValue&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;
+&lt;/div&gt;
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+public string StringValue { get; set; } = "Hello";
+public string PasswordValue { get; set; } = "mypass";
+public bool BooleanValue { get; set; } = true;
+public string[] OptionValues { get; set; } = new string[] { "Alpha", "Beta", "Gamma" };
+public string SelectedOptionValue { get; set; } = "Gamma";
+public string RadioSelectedOptionValue { get; set; } = "Beta";
+public List&lt;string&gt; MultipleOptionSelectedValue { get; set; } = new List&lt;string&gt; { "Alpha" };
+
+public void SetRadioSelectionOption(string value)
+{
+    RadioSelectedOptionValue = value;
+}
+
+public bool IsOptionSelected(string item)
+{
+    return MultipleOptionSelectedValue.Contains(item);
+}
+
+public void OnOptionClick(UIMouseEventArgs mouseEvent, string item)
+{
+    if (mouseEvent.CtrlKey)
+    {
+        if (MultipleOptionSelectedValue.Contains(item))
+        {
+            MultipleOptionSelectedValue.Remove(item);
+        }
+        else
+        {
+            MultipleOptionSelectedValue.Add(item);
+        }
+    }
+    else
+    {
+        MultipleOptionSelectedValue.Clear();
+        MultipleOptionSelectedValue.Add(item);
+    }
+}
+</pre>
+            </div>
+        </div>
+    </div>
+</CodeViewer>

@@ -1,0 +1,23 @@
+﻿@page "/helloworld"
+
+<h3>Live Example</h3>
+<div class="row mb-3">
+    <div class="col-lg-12">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <p>First Name:<input class="form-control" bind="@FirstName" /></p>
+                <p>Last Name:<input class="form-control" bind="@LastName" /></p>
+                <h4>Hello, @FullName !</h4>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Source Code</h3>
+<HelloWorldCodeViewer></HelloWorldCodeViewer>
+
+@functions {
+public string FirstName { get; set; } = "Planet";
+public string LastName { get; set; } = "Earth";
+public string FullName { get => $"{FirstName} {LastName}"; }
+}

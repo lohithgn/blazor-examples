@@ -1,0 +1,26 @@
+﻿<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <a class="nav-item nav-link active" id="nav-view-tab" data-toggle="tab" href="javascript:void(0)" role="tab" 
+           aria-controls="nav-view" aria-selected="true" onclick="@OnViewClick">View</a>
+        <a class="nav-item nav-link" id="nav-model-tab" data-toggle="tab" href="javascript:void(0)" role="tab" 
+           aria-controls="nav-model" aria-selected="false" onclick="@OnModelClick">Model</a>
+    </div>
+</nav>
+<div class="tab-content mt-2" id="nav-tabContent">
+    @ChildContent
+</div>
+
+@functions {
+    [Parameter]
+    private RenderFragment ChildContent { get; set; }
+
+    public void OnViewClick()
+    {
+        JSRuntime.Current.InvokeAsync<bool>("codeViewerExtensions.showView");
+    }
+
+    public void OnModelClick()
+    {
+        JSRuntime.Current.InvokeAsync<bool>("codeViewerExtensions.showModel");
+    }
+}

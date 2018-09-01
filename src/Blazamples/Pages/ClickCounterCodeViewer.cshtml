@@ -1,0 +1,35 @@
+﻿<CodeViewer>
+    <div class="tab-pane fade show active" id="nav-view" role="tabpanel" aria-labelledby="nav-view-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+                <pre>
+&lt;div&gt;You've clicked &lt;span&gt;@@NumberOfClicks&lt;/span&gt; times&lt;/div&gt;
+&lt;button onclick="@@RegisterClick" disabled="@@HasClickedTooManyTimes"&gt;Click me&lt;/button&gt;
+&lt;div class='@@((HasClickedTooManyTimes ? "d-block" : "d-none"))'&gt;
+    That's too many clicks! Please stop before you wear out your fingers.
+    &lt;button onclick="@@ResetClicks"&gt;Reset clicks&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="nav-model" role="tabpanel" aria-labelledby="nav-model-tab">
+        <div class="card bg-light mb-3">
+            <div class="card-body">
+<pre>
+public int NumberOfClicks { get; set; }
+public bool HasClickedTooManyTimes { get => NumberOfClicks >= 3; }
+public void RegisterClick()
+{
+    ++NumberOfClicks;
+}
+
+public void ResetClicks()
+{
+    NumberOfClicks = 0;
+}
+</pre>
+            </div>
+        </div>
+    </div>
+</CodeViewer>
