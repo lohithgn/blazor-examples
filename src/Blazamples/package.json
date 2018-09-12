@@ -1,0 +1,8 @@
+{
+    "version": "1.0.0",
+    "name": "blazorexamples",
+    "private": true,
+    "devDependencies": {
+        "surge": "0.20.1"
+    }
+}
